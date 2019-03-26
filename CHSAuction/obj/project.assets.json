@@ -12225,11 +12225,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/brandonrivera/Desktop/CHSAuction/CHSAuction.csproj",
+      "projectUniqueName": "/Users/brandonrivera/Desktop/Test-Auth/CHSAuction/CHSAuction.csproj",
       "projectName": "CHSAuction",
-      "projectPath": "/Users/brandonrivera/Desktop/CHSAuction/CHSAuction.csproj",
+      "projectPath": "/Users/brandonrivera/Desktop/Test-Auth/CHSAuction/CHSAuction.csproj",
       "packagesPath": "/Users/brandonrivera/.nuget/packages/",
-      "outputPath": "/Users/brandonrivera/Desktop/CHSAuction/obj",
+      "outputPath": "/Users/brandonrivera/Desktop/Test-Auth/CHSAuction/obj",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"

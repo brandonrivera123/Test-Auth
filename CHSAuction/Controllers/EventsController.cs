@@ -62,7 +62,7 @@ namespace CHSAuction.Controllers
                 Packages = packages
             };
 
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventLocation", packageLocations.EventId);
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", packageLocations.EventId);
             ViewData["TransactionId"] = new SelectList(_context.Transactions, "TransactionId", "TransactionId", packageLocations.TransactionId);
 
             return View(eventPackages);
@@ -79,7 +79,7 @@ namespace CHSAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventId,EventLocation,EventTicketNum,EventStart,EventEnd,EventName,EventGoal")] Events events)
+        public async Task<IActionResult> Create([Bind("EventId,EventLocation,EventTicketNum,EventStart,EventEnd,EventName,EventGoal,EventURL")] Events events)
         {
             if (ModelState.IsValid)
             {
@@ -111,7 +111,7 @@ namespace CHSAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventLocation,EventTicketNum,EventStart,EventEnd,EventName,EventGoal")] Events events)
+        public async Task<IActionResult> Edit(int id, [Bind("EventId,EventLocation,EventTicketNum,EventStart,EventEnd,EventName,EventGoal,EventURL")] Events events)
         {
             if (id != events.EventId)
             {
@@ -176,4 +176,3 @@ namespace CHSAuction.Controllers
         }
     }
 }
-

@@ -21,8 +21,12 @@ namespace CHSAuction.Controllers
         // GET: Packages
         public async Task<IActionResult> Index()
         {
-            var eventBasedAuctionSoftwareContext = _context.Packages.Include(p => p.Event).Include(p => p.Transaction);
-            return View(await eventBasedAuctionSoftwareContext.ToListAsync());
+            var packages = await _context.Packages.Include(p => p.Event).Include(p => p.Transaction).ToListAsync();
+            var editPackage = new EditPackageVM { Packages = packages};
+
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
+            ViewData["TransactionId"] = new SelectList(_context.Transactions, "TransactionId", "TransactionId");
+            return View(editPackage);
         }
 
         // GET: Packages/Details/5
@@ -54,16 +58,18 @@ namespace CHSAuction.Controllers
                 Items = items
             };
 
-            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestId");
-            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageId");
+            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestFirstName");
+            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageName");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", packageItems.CategoryId);
 
             return View(packageItems);
         }
 
+
         // GET: Packages/Create
         public IActionResult Create()
         {
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventLocation");
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName");
             ViewData["TransactionId"] = new SelectList(_context.Transactions, "TransactionId", "TransactionId");
             return View();
         }
@@ -73,7 +79,7 @@ namespace CHSAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PackageId,PackageDescription,PackageStartBid,PackageBidIncrement,PackageFinalPrice,EventId,TransactionId")] Packages packages)
+        public async Task<IActionResult> Create([Bind("PackageId,PackageName,PackageDescription,PackageStartBid,PackageBidIncrement,PackageFinalPrice,EventId,TransactionId")] Packages packages)
         {
             if (ModelState.IsValid)
             {
@@ -81,7 +87,7 @@ namespace CHSAuction.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventLocation", packages.EventId);
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", packages.EventId);
             ViewData["TransactionId"] = new SelectList(_context.Transactions, "TransactionId", "TransactionId", packages.TransactionId);
             return View(packages);
         }
@@ -99,7 +105,7 @@ namespace CHSAuction.Controllers
             {
                 return NotFound();
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventLocation", packages.EventId);
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", packages.EventId);
             ViewData["TransactionId"] = new SelectList(_context.Transactions, "TransactionId", "TransactionId", packages.TransactionId);
             return View(packages);
         }
@@ -109,7 +115,7 @@ namespace CHSAuction.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PackageId,PackageDescription,PackageStartBid,PackageBidIncrement,PackageFinalPrice,EventId,TransactionId")] Packages packages)
+        public async Task<IActionResult> Edit(int id, [Bind("PackageId,PackageName,PackageDescription,PackageStartBid,PackageBidIncrement,PackageFinalPrice,EventId,TransactionId")] Packages packages)
         {
             if (id != packages.PackageId)
             {
@@ -136,7 +142,7 @@ namespace CHSAuction.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventLocation", packages.EventId);
+            ViewData["EventId"] = new SelectList(_context.Events, "EventId", "EventName", packages.EventId);
             ViewData["TransactionId"] = new SelectList(_context.Transactions, "TransactionId", "TransactionId", packages.TransactionId);
             return View(packages);
         }

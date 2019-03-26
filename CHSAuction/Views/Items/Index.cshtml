@@ -1,20 +1,40 @@
 ﻿@model CHSAuction.Models.ItemPackagesVM
 
 @{
-    ViewBag.Title = "Event Items";
+    ViewBag.Title = "Items";
 }
-<h2>Item Log</h2>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("#focusedInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#unpackagedItems #itemCard h3").filter(function() {
+        $(this).parentsUntil("#itemRow").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+    $("#packagedItems #packagedItemCard h3").filter(function() {
+        $(this).parentsUntil("#packagedRow").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
+<h2>Items</h2>
 
 <div class="row">
     <div class="col-lg-3">
         <div class="form-group">
-            <input class="form-control" id="focusedInput" onkeyup="myFunction()" type="text" placeholder="Search">
+            <input class="form-control" id="focusedInput" type="text" placeholder="Search">
         </div>
     </div>
-    <div class="col-lg-1">
+    @*<div class="col-lg-1">
         <div class="btn-group">
             <a href="#" class="btn btn-warning dropdown-toggle" id="Filter" data-toggle="dropdown">Filter <span class="caret"></span></a>
             <ul class="dropdown-menu" id="selectedvalue">
+                @foreach (SelectListItem category in ((SelectList)ViewBag.CategoryId).Items)
+                {
+                    <li><a href="#">@category</a></li>
+                }
                 <li><a href="#">Leisure</a></li>
                 <li><a href="#">Artwork</a></li>
                 <li><a href="#">Clothing</a></li>
@@ -23,7 +43,7 @@
                 <li><a href="#" id="All">All</a></li>
             </ul>
         </div>
-    </div>
+    </div>*@
     <div class="col-lg-1">
         <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">Add Item</a>
     </div>
@@ -32,21 +52,22 @@
 <ul class="nav nav-tabs">
     <li class="active"><a href="#unpackagedItems" data-toggle="tab" aria-expanded="true">Unpackaged Items</a></li>
     <li class=""><a href="#packagedItems" data-toggle="tab" aria-expanded="false">Packaged Items</a></li>
-    <li class=""><a href="#packages" data-toggle="tab" aria-expanded="false">Packages</a></li>
 </ul>
 <div id="myTabContent" class="tab-content">
     <div class="tab-pane fade active in" id="unpackagedItems">
-        <div class="row">
+        <div id="itemRow" class="row">
             @foreach (var item in Model.items.Where(m => m.PackageId == null))
             {
-                <div class="col-sm-6 col-md-4">
+                <div id="itemCard" value="@item.ItemName" class="col-sm-6 col-md-4">
                     <div class="thumbnail">
-                        <img src="@Html.DisplayFor(model => item.ItemImage)">
+                        <img  style="height:140px; width:auto;" src="@Html.DisplayFor(model => item.ItemImage)">
                         <div class="caption">
-                            <h3>@Html.DisplayFor(model => item.ItemName)</h3>
+                            <h3 id="itemName">@Html.DisplayFor(model => item.ItemName)</h3>
                             <p style="height:45px; overflow:hidden">@Html.DisplayFor(model => item.ItemDescription)</p>
+                            @*<h6>@Html.DisplayFor(model => item.CategoryId)</h6>*@
                             <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editItemModal-@item.ItemId">Edit</a>
                             <a href="#" class="btn btn-default" data-toggle="modal" data-target="#viewDetailModal-@item.ItemId">View Details</a>
+                            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#deleteItemModal-@item.ItemId">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -56,7 +77,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Item No. @Html.DisplayFor(model => item.ItemId)</h4>
+                                <h4 class="modal-title">@item.ItemName</h4>
                             </div>
                             <div class="modal-body">
                                 <div>
@@ -64,18 +85,18 @@
                                         <fieldset>
                                             <div class="form-group">
                                                 <div class="thumbnail">
-                                                    <img src="@Html.DisplayFor(model => item.ItemImage)">
+                                                    <img style="height:250px; width:auto;" src="@Html.DisplayFor(model => item.ItemImage)">
                                                 </div>
                                             </div>
                                             <hr />
-                                            <p class="col-lg-3">Item Name: </p>
+                                            <p class="col-lg-3">Name: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.ItemName)</p>
 
                                             <p class="col-lg-3">Description: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.ItemDescription)</p>
 
                                             <p class="col-lg-3">Category: </p>
-                                            <p class="col-lg-9">@Html.DisplayFor(model => item.CategoryId)</p>
+                                            <p class="col-lg-9">@Html.DisplayFor(model => item.CategoryId)&nbsp;</p>
 
                                             <p class="col-lg-3">Value: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.ItemValue)</p>
@@ -83,7 +104,7 @@
                                             <p class="col-lg-3">Donor: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.GuestId)</p>
 
-                                            <p class="col-lg-3">Package ID: </p>
+                                            <p class="col-lg-3">Package: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.PackageId)</p>
                                         </fieldset>
                                     </form>
@@ -97,41 +118,41 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Edit Item No. @item.ItemId</h4>
+                                <h4 class="modal-title">Edit @item.ItemName</h4>
                             </div>
                             <div class="modal-body">
                                 <form asp-controller="Items" asp-action="Edit" asp-route-id="@item.ItemId">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <input type="hidden" asp-for="ItemId" value="@item.ItemId" />
                                     <div class="form-group">
-                                        <label asp-for="@item.ItemName" class="control-label"></label>
+                                        <label asp-for="@item.ItemName" class="control-label">Name</label>
                                         <input asp-for="ItemName" class="form-control" value="@item.ItemName" />
                                         <span asp-validation-for="@item.ItemName" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.ItemDescription" class="control-label"></label>
+                                        <label asp-for="@item.ItemDescription" class="control-label">Description</label>
                                         <input asp-for="ItemDescription" class="form-control" value="@item.ItemDescription" />
                                         <span asp-validation-for="@item.ItemDescription" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.CategoryId" class="control-label"></label>
+                                        <label asp-for="@item.CategoryId" class="control-label">Category</label>
                                         <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
                                             <option value="@item.CategoryId" selected>@Html.DisplayFor(model => item.CategoryId)</option>
                                         </select>
                                         <span asp-validation-for="@item.CategoryId" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.ItemImage" class="control-label"></label>
+                                        <label asp-for="@item.ItemImage" class="control-label">Image Path</label>
                                         <input asp-for="ItemImage" class="form-control" value="@item.ItemImage" />
                                         <span asp-validation-for="@item.ItemImage" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.ItemValue" class="control-label"></label>
+                                        <label asp-for="@item.ItemValue" class="control-label">Value</label>
                                         <input asp-for="ItemValue" class="form-control" value="@item.ItemValue" />
                                         <span asp-validation-for="@item.ItemValue" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.PackageId" class="control-label"></label>
+                                        <label asp-for="@item.PackageId" class="control-label">Package</label>
                                         <select asp-for="PackageId" class="form-control" asp-items="ViewBag.PackageId">
                                             <option value="@item.PackageId" selected>@Html.DisplayFor(model => item.PackageId)</option>
                                             <option value="">None</option>
@@ -139,7 +160,7 @@
                                         <span asp-validation-for="@item.PackageId" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.GuestId" class="control-label"></label>
+                                        <label asp-for="@item.GuestId" class="control-label">Donor</label>
                                         <select asp-for="GuestId" class="form-control" asp-items="ViewBag.GuestId">
                                             <option value="@item.GuestId" selected>@Html.DisplayFor(model => item.GuestId)</option>
                                         </select>
@@ -148,6 +169,69 @@
                                     <div class="form-group">
                                         <input type="submit" value="Save" class="btn btn-primary" />
                                     </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteItemModal-@item.ItemId" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Are you sure you want to delete this item?</h4>
+                            </div>
+                            <div class="modal-body">
+                                <dl class="dl-horizontal">
+                                    <dt>
+                                        Name:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.ItemName)
+                                    </dd>
+                                    <dt>
+                                        Description:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.ItemDescription)
+                                    </dd>
+                                    <dt>
+                                        Category:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.CategoryId)
+                                    </dd>
+                                    <dt>
+                                        Image Path:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.ItemImage)
+                                    </dd>
+                                    <dt>
+                                        Value:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.ItemValue)
+                                    </dd>
+                                    <dt>
+                                        Donor:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.Guest.GuestId)
+                                    </dd>
+                                    <dt>
+                                        Package:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.Package.PackageId)
+                                    </dd>
+                                </dl>
+
+                                <form asp-action="Delete" asp-route-id="@item.ItemId">
+                                    <input type="hidden" asp-for="ItemId" value="@item.ItemId" />
+                                    <input type="submit" value="Delete" class="btn btn-primary" />
+                                    <a href="#" data-dismiss="modal" class="btn btn-default">Cancel</a>
                                 </form>
                             </div>
                         </div>
@@ -157,10 +241,10 @@
         </div>
     </div>
     <div class="tab-pane fade" id="packagedItems">
-        <div class="row">
+        <div id="packagedRow" class="row">
             @foreach (var item in Model.items.Where(m => m.PackageId != null))
             {
-                <div class="col-sm-6 col-md-4">
+                <div id="packagedItemCard" class="col-sm-6 col-md-4">
                     <div class="thumbnail">
                         <img src="@Html.DisplayFor(model => item.ItemImage)">
                         <div class="caption">
@@ -168,6 +252,7 @@
                             <p style="height:45px; overflow:hidden">@Html.DisplayFor(model => item.ItemDescription)</p>
                             <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editItemModal-@item.ItemId">Edit</a>
                             <a href="#" class="btn btn-default" data-toggle="modal" data-target="#viewDetailModal-@item.ItemId">View Details</a>
+                            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#deleteItemModal-@item.ItemId">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -177,7 +262,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Item No. @Html.DisplayFor(model => item.ItemId)</h4>
+                                <h4 class="modal-title">@item.ItemName</h4>
                             </div>
                             <div class="modal-body">
                                 <div>
@@ -185,18 +270,18 @@
                                         <fieldset>
                                             <div class="form-group">
                                                 <div class="thumbnail">
-                                                    <img src="@Html.DisplayFor(model => item.ItemImage)">
+                                                    <img style="height:250px; width:auto;" src="@Html.DisplayFor(model => item.ItemImage)">
                                                 </div>
                                             </div>
                                             <hr />
-                                            <p class="col-lg-3">Item Name: </p>
+                                            <p class="col-lg-3">Name: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.ItemName)</p>
 
                                             <p class="col-lg-3">Description: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.ItemDescription)</p>
 
                                             <p class="col-lg-3">Category: </p>
-                                            <p class="col-lg-9">@Html.DisplayFor(model => item.CategoryId)</p>
+                                            <p class="col-lg-9">@Html.DisplayFor(model => item.CategoryId)&nbsp;</p>
 
                                             <p class="col-lg-3">Value: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.ItemValue)</p>
@@ -204,7 +289,7 @@
                                             <p class="col-lg-3">Donor: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.GuestId)</p>
 
-                                            <p class="col-lg-3">Package ID: </p>
+                                            <p class="col-lg-3">Package: </p>
                                             <p class="col-lg-9">@Html.DisplayFor(model => item.PackageId)</p>
                                         </fieldset>
                                     </form>
@@ -218,41 +303,41 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Edit Item No. @item.ItemId</h4>
+                                <h4 class="modal-title">Edit @item.ItemName</h4>
                             </div>
                             <div class="modal-body">
                                 <form asp-controller="Items" asp-action="Edit" asp-route-id="@item.ItemId">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <input type="hidden" asp-for="ItemId" value="@item.ItemId" />
                                     <div class="form-group">
-                                        <label asp-for="@item.ItemName" class="control-label"></label>
+                                        <label asp-for="@item.ItemName" class="control-label">Name</label>
                                         <input asp-for="ItemName" class="form-control" value="@item.ItemName" />
                                         <span asp-validation-for="@item.ItemName" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.ItemDescription" class="control-label"></label>
+                                        <label asp-for="@item.ItemDescription" class="control-label">Description</label>
                                         <input asp-for="ItemDescription" class="form-control" value="@item.ItemDescription" />
                                         <span asp-validation-for="@item.ItemDescription" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.CategoryId" class="control-label"></label>
+                                        <label asp-for="@item.CategoryId" class="control-label">Category</label>
                                         <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
                                             <option value="@item.CategoryId" selected>@Html.DisplayFor(model => item.CategoryId)</option>
                                         </select>
                                         <span asp-validation-for="@item.CategoryId" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.ItemImage" class="control-label"></label>
+                                        <label asp-for="@item.ItemImage" class="control-label">Image Path</label>
                                         <input asp-for="ItemImage" class="form-control" value="@item.ItemImage" />
                                         <span asp-validation-for="@item.ItemImage" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.ItemValue" class="control-label"></label>
+                                        <label asp-for="@item.ItemValue" class="control-label">Value</label>
                                         <input asp-for="ItemValue" class="form-control" value="@item.ItemValue" />
                                         <span asp-validation-for="@item.ItemValue" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.PackageId" class="control-label"></label>
+                                        <label asp-for="@item.PackageId" class="control-label">Package</label>
                                         <select asp-for="PackageId" class="form-control" asp-items="ViewBag.PackageId">
                                             <option value="@item.PackageId" selected>@Html.DisplayFor(model => item.PackageId)</option>
                                             <option value="">None</option>
@@ -260,7 +345,7 @@
                                         <span asp-validation-for="@item.PackageId" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="@item.GuestId" class="control-label"></label>
+                                        <label asp-for="@item.GuestId" class="control-label">Donor</label>
                                         <select asp-for="GuestId" class="form-control" asp-items="ViewBag.GuestId">
                                             <option value="@item.GuestId" selected>@Html.DisplayFor(model => item.GuestId)</option>
                                         </select>
@@ -274,69 +359,73 @@
                         </div>
                     </div>
                 </div>
-            }
-        </div>
-    </div>
-    <div class="tab-pane fade" id="packages">
-        <div class="row">
-            @foreach (var item in Model.packages)
-        {
-            <div class="col-sm-6 col-md-4">
-                <div class="thumbnail">
-                    <div class="caption">
-                        <h3>@Html.DisplayFor(modelItem => item.PackageId)</h3>
-                        <p style="height:45px; overflow:hidden">@Html.DisplayFor(modelItem => item.PackageDescription)</p>
-                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editModal">Edit</a>
-                        <a href="#" class="btn btn-default" data-toggle="modal" data-target="#viewPackageDetailModal-@item.PackageId">View Details</a>
-                    </div>
-                </div>
-            </div>
-            <div class="modal fade" id="viewPackageDetailModal-@item.PackageId" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Package No. @item.PackageId</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div>
-                                <form class="form-horizontal">
-                                    <fieldset>
-                                        <p class="col-lg-3">Package ID: </p>
-                                        <p class="col-lg-9">@Html.DisplayFor(modelItem => item.PackageId)</p>
 
-                                        <p class="col-lg-3">Description: </p>
-                                        <p class="col-lg-9">@Html.DisplayFor(modelItem => item.PackageDescription)</p>
+                <div class="modal fade" id="deleteItemModal-@item.ItemId" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Are you sure you want to delete this item?</h4>
+                            </div>
+                            <div class="modal-body">
+                                <dl class="dl-horizontal">
+                                    <dt>
+                                        Name:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.ItemName)
+                                    </dd>
+                                    <dt>
+                                        Description:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.ItemDescription)
+                                    </dd>
+                                    <dt>
+                                        Category:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.CategoryId)
+                                    </dd>
+                                    <dt>
+                                        Image Path:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.ItemImage)
+                                    </dd>
+                                    <dt>
+                                        Value:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.ItemValue)
+                                    </dd>
+                                    <dt>
+                                        Donor:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.Guest.GuestId)
+                                    </dd>
+                                    <dt>
+                                        Package:
+                                    </dt>
+                                    <dd>
+                                        @Html.DisplayFor(model => item.Package.PackageId)
+                                    </dd>
+                                </dl>
 
-                                        <p class="col-lg-3">Start Bid: </p>
-                                        <p class="col-lg-9">@Html.DisplayFor(modelItem => item.PackageStartBid)</p>
-
-                                        <p class="col-lg-3">Bid Increment: </p>
-                                        <p class="col-lg-9">@Html.DisplayFor(modelItem => item.PackageBidIncrement)<p>
-
-                                        <p class="col-lg-3">Final Price: </p>
-                                        <p class="col-lg-9">@Html.DisplayFor(modelItem => item.PackageFinalPrice)</p>
-
-                                        <p class="col-lg-3">Event: </p>
-                                        <p class="col-lg-9">@Html.DisplayFor(modelItem => item.EventId)</p>
-
-                                        <p class="col-lg-3">Transaction: </p>
-                                        <p class="col-lg-9">@Html.DisplayFor(modelItem => item.TransactionId)</p>
-
-
-                                    </fieldset>
+                                <form asp-action="Delete" asp-route-id="@item.ItemId">
+                                    <input type="hidden" asp-for="ItemId" value="@item.ItemId" />
+                                    <input type="submit" value="Delete" class="btn btn-primary" />
+                                    <a href="#" data-dismiss="modal" class="btn btn-default">Cancel</a>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-    }
+            }
         </div>
     </div>
 </div>
-
 
 <!----------------------------------------------Add Item Modal--------------------------------------------->
 <div class="modal fade" id="addItemModal" role="dialog">
@@ -350,37 +439,39 @@
                 <form asp-controller="Items" asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="ItemName" class="control-label"></label>
+                        <label asp-for="ItemName" class="control-label">Name</label>
                         <input asp-for="ItemName" class="form-control" />
                         <span asp-validation-for="ItemName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ItemDescription" class="control-label"></label>
+                        <label asp-for="ItemDescription" class="control-label">Description</label>
                         <input asp-for="ItemDescription" class="form-control" />
                         <span asp-validation-for="ItemDescription" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="CategoryId" class="control-label"></label>
-                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                        <label asp-for="CategoryId" class="control-label">Category</label>
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                            <option value="" selected>None</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ItemImage" class="control-label"></label>
+                        <label asp-for="ItemImage" class="control-label">Image Path</label>
                         <input asp-for="ItemImage" class="form-control" />
                         <span asp-validation-for="ItemImage" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ItemValue" class="control-label"></label>
+                        <label asp-for="ItemValue" class="control-label">Value</label>
                         <input asp-for="ItemValue" class="form-control" />
                         <span asp-validation-for="ItemValue" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="PackageId" class="control-label"></label>
+                        <label asp-for="PackageId" class="control-label">Package</label>
                         <select asp-for="PackageId" class="form-control" asp-items="ViewBag.PackageId">
                             <option value="" selected>None</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label asp-for="GuestId" class="control-label"></label>
+                        <label asp-for="GuestId" class="control-label">Donor</label>
                         <select asp-for="GuestId" class="form-control" asp-items="ViewBag.GuestId"></select>
                     </div>
                     <div class="form-group">
@@ -391,3 +482,6 @@
         </div>
     </div>
 </div>
+
+
+

@@ -1,12 +1,11 @@
 ﻿<Properties StartupConfiguration="{C74CE077-C368-4CC6-89F8-2690EACA2A81}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Views/Shared/_Layout.cshtml">
+  <MonoDevelop.Ide.Workbench ActiveDocument="CHSAuction Status">
     <Files>
       <File FileName="Models/EventBasedAuctionSoftwareContext.cs" Line="1" Column="1" />
       <File FileName="Views/Shared/_LoginPartial.cshtml" Line="24" Column="10" />
       <File FileName="Data/ApplicationDbContext.cs" Line="13" Column="10" />
-      <File FileName="Models/EventDetailsVM.cs" Line="1" Column="1" />
       <File FileName="Controllers/AdminsController.cs" Line="1" Column="1" />
-      <File FileName="Startup.cs" Line="42" Column="97" />
+      <File FileName="Startup.cs" Line="42" Column="67" />
       <File FileName="Program.cs" Line="1" Column="1" />
       <File FileName="appsettings.Development.json" Line="1" Column="1" />
       <File FileName="appsettings.json" Line="3" Column="175" />
@@ -17,8 +16,9 @@
       <File FileName="Views/Shared/_ValidationScriptsPartial.cshtml" Line="1" Column="1" />
       <File FileName="Properties/launchSettings.json" Line="1" Column="1" />
       <File FileName="Controllers/HomeController.cs" Line="1" Column="1" />
-      <File FileName="Views/Shared/_Layout.cshtml" Line="36" Column="80" />
+      <File FileName="Views/Shared/_Layout.cshtml" Line="62" Column="22" />
       <File FileName="Controllers/EventsController.cs" Line="1" Column="1" />
+      <File FileName="CHSAuction Status" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.CHSAuction PreferredExecutionTarget="MonoDevelop.Default" />

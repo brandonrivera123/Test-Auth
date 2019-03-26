@@ -22,15 +22,12 @@ namespace CHSAuction.Controllers
         public async Task<IActionResult> Index()
         {
             var items = _context.Items.Include(i => i.Guest).Include(i => i.Package);
-            var packages = await _context.Packages.ToListAsync();
-            if (packages == null)
-            {
-                return NotFound();
-            }
-            var itemsPackages = new ItemPackagesVM { items = items, packages = packages };
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", itemsPackages.CategoryId);
-            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestId", itemsPackages.GuestId);
-            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageId", itemsPackages.PackageId);
+
+            var itemsPackages = new ItemPackagesVM { items = items};
+
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", itemsPackages.CategoryId);
+            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestFirstName", itemsPackages.GuestId);
+            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageName", itemsPackages.PackageId);
             return View(itemsPackages);
         }
 
@@ -57,9 +54,9 @@ namespace CHSAuction.Controllers
         // GET: Items/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
-            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestId");
-            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageId");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName");
+            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestFirstName");
+            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageName");
             return View();
         }
 
@@ -76,9 +73,9 @@ namespace CHSAuction.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", items.CategoryId);
-            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestId", items.GuestId);
-            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageId", items.PackageId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", items.CategoryId);
+            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestFirstName", items.GuestId);
+            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageName", items.PackageId);
             return View(items);
         }
 
@@ -95,9 +92,9 @@ namespace CHSAuction.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", items.CategoryId);
-            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestId", items.GuestId);
-            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageId", items.PackageId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", items.CategoryId);
+            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestFirstName", items.GuestId);
+            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageName", items.PackageId);
             return View(items);
         }
 
@@ -135,9 +132,9 @@ namespace CHSAuction.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", items.CategoryId);
-            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestId", items.GuestId);
-            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageId", items.PackageId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", items.CategoryId);
+            ViewData["GuestId"] = new SelectList(_context.Guests, "GuestId", "GuestFirstName", items.GuestId);
+            ViewData["PackageId"] = new SelectList(_context.Packages, "PackageId", "PackageName", items.PackageId);
             return View(items);
         }
 
@@ -179,4 +176,3 @@ namespace CHSAuction.Controllers
         }
     }
 }
-

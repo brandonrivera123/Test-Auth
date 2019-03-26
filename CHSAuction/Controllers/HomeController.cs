@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CHSAuction.Models;
 
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
+
 namespace CHSAuction.Controllers
 {
     public class HomeController : Controller
@@ -14,7 +17,7 @@ namespace CHSAuction.Controllers
 
         //public HomeController(IConfiguration config)
         //{
-        //this.configuration = config;
+            //this.configuration = config;
         //}
 
         public IActionResult Index()
@@ -79,12 +82,12 @@ namespace CHSAuction.Controllers
             return View();
         }
 
-        public IActionResult CheckIn()
+		public IActionResult CheckIn()
         {
             ViewData["Message"] = "Check In";
 
             return View();
-        }
+		}
         public IActionResult Invoice()
         {
             return View();

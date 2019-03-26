@@ -1,4 +1,4 @@
-﻿@model CHSAuction.Models.Admins
+﻿@model CHSAuction.Models.Transactions
 
 @{
     ViewData["Title"] = "Create";
@@ -6,26 +6,20 @@
 
 <h2>Create</h2>
 
-<h4>Admins</h4>
+<h4>Transactions</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="AdminUsername" class="control-label"></label>
-                <input asp-for="AdminUsername" class="form-control" />
-                <span asp-validation-for="AdminUsername" class="text-danger"></span>
+                <label asp-for="TransactionTotalPrice" class="control-label"></label>
+                <input asp-for="TransactionTotalPrice" class="form-control" />
+                <span asp-validation-for="TransactionTotalPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AdminEmail" class="control-label"></label>
-                <input asp-for="AdminEmail" class="form-control" />
-                <span asp-validation-for="AdminEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AdminPassword" class="control-label"></label>
-                <input asp-for="AdminPassword" class="form-control" />
-                <span asp-validation-for="AdminPassword" class="text-danger"></span>
+                <label asp-for="GuestId" class="control-label"></label>
+                <select asp-for="GuestId" class ="form-control" asp-items="ViewBag.GuestId"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />

@@ -1,11 +1,23 @@
 ﻿@model CHSAuction.Models.PackageDetailsVM
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Package Details";
 }
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("#focusedInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#itemCard h3").filter(function() {
+        $(this).parentsUntil("#itemRow").toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
 <div>
-    <h2>Package Details</h2>
+    <h2>Package: @Model.Packages.PackageName</h2>
     <div class="row">
         <div class="col-lg-12">
             <div class="thumbnail">
@@ -37,7 +49,7 @@
             <div class="thumbnail">
                 <h3>Event:</h3>
                 <div class="caption">
-                    <p>@Html.DisplayFor(model => Model.Packages.EventId)</p>
+                    <p>@Html.DisplayFor(model => Model.Packages.Event.EventName) - @Html.DisplayFor(model => Model.Packages.Event.EventLocation)</p>
                 </div>
             </div>
         </div>
@@ -66,33 +78,44 @@
     <div class="row">
         <div class="col-lg-3">
             <div class="form-group">
+                <input class="form-control" id="focusedInput" type="text" placeholder="Search">
+            </div>
+        </div>
+        <div class="col-lg-1">
+            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">Create New Item</a>
+        </div>
+    </div>
+
+    @*<div class="row">
+        <div class="col-lg-3">
+            <div class="form-group">
                 <input class="form-control" id="focusedInput" onkeyup="myFunction()" type="text" placeholder="Search">
             </div>
         </div>
         <div class="col-lg-1">
-            <div class="btn-group">
-                <a href="#" class="btn btn-warning dropdown-toggle" id="Filter" data-toggle="dropdown">Filter<span class="caret"></span></a>
-                <ul class="dropdown-menu" id="selectedvalue">
-                    <li><a href="#">Leisure</a></li>
-                    <li><a href="#">Artwork</a></li>
-                    <li><a href="#">Clothing</a></li>
-                    <li><a href="#">Other</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#" id="All">All</a></li>
-                </ul>
+                <div class="btn-group">
+                    <a href="#" class="btn btn-warning dropdown-toggle" id="Filter" data-toggle="dropdown">Filter<span class="caret"></span></a>
+                    <ul class="dropdown-menu" id="selectedvalue">
+                        <li><a href="#">Leisure</a></li>
+                        <li><a href="#">Artwork</a></li>
+                        <li><a href="#">Clothing</a></li>
+                        <li><a href="#">Other</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" id="All">All</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
         <div class="col-lg-1">
-            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">Add</a>
+            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">Create New Item</a>
         </div>
-    </div>
+    </div>*@
 
-    <div class="row">
+    <div id="itemRow" class="row">
         @foreach (var item in Model.Items.Where(m => m.PackageId == Model.Packages.PackageId))
         {
-            <div class="col-sm-6 col-md-4">
+            <div id="itemCard" class="col-sm-6 col-md-4">
                 <div class="thumbnail">
-                    <img src="@Html.DisplayFor(model => item.ItemImage)">
+                    <img style="height:140px; width:auto;" src="@Html.DisplayFor(model => item.ItemImage)">
                     <div class="caption">
                         <h3>@Html.DisplayFor(model => item.ItemName)</h3>
                         <p style="height:45px; overflow:hidden">@Html.DisplayFor(model => item.ItemDescription)</p>
@@ -115,18 +138,18 @@
                                     <fieldset>
                                         <div class="form-group">
                                             <div class="thumbnail">
-                                                <img src="@Html.DisplayFor(model => item.ItemImage)">
+                                                <img style="height:250px; width:auto;" src="@Html.DisplayFor(model => item.ItemImage)">
                                             </div>
                                         </div>
                                         <hr />
-                                        <p class="col-lg-3">Item Name: </p>
+                                        <p class="col-lg-3">Name: </p>
                                         <p class="col-lg-9">@Html.DisplayFor(model => item.ItemName)</p>
 
                                         <p class="col-lg-3">Description: </p>
                                         <p class="col-lg-9">@Html.DisplayFor(model => item.ItemDescription)</p>
 
                                         <p class="col-lg-3">Category: </p>
-                                        <p class="col-lg-9">@Html.DisplayFor(model => item.CategoryId)</p>
+                                        <p class="col-lg-9">@Html.DisplayFor(model => item.CategoryId)&nbsp;</p>
 
                                         <p class="col-lg-3">Value: </p>
                                         <p class="col-lg-9">@Html.DisplayFor(model => item.ItemValue)</p>
@@ -148,41 +171,41 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit Item No. @item.ItemId</h4>
+                            <h4 class="modal-title">Edit @item.ItemName</h4>
                         </div>
                         <div class="modal-body">
                             <form asp-controller="Items" asp-action="Edit" asp-route-id="@item.ItemId">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <input type="hidden" asp-for="ItemId" value="@item.ItemId"/>
+                                <input type="hidden" asp-for="ItemId" value="@item.ItemId" />
                                 <div class="form-group">
-                                    <label asp-for="@item.ItemName" class="control-label"></label>
-                                    <input asp-for="ItemName" class="form-control" value="@item.ItemName"/>
+                                    <label asp-for="@item.ItemName" class="control-label">Name</label>
+                                    <input asp-for="ItemName" class="form-control" value="@item.ItemName" />
                                     <span asp-validation-for="@item.ItemName" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@item.ItemDescription" class="control-label"></label>
-                                    <input asp-for="ItemDescription" class="form-control" value="@item.ItemDescription"/>
+                                    <label asp-for="@item.ItemDescription" class="control-label">Description</label>
+                                    <input asp-for="ItemDescription" class="form-control" value="@item.ItemDescription" />
                                     <span asp-validation-for="@item.ItemDescription" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@item.CategoryId" class="control-label"></label>
+                                    <label asp-for="@item.CategoryId" class="control-label">Category</label>
                                     <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
                                         <option value="@item.CategoryId" selected>@Html.DisplayFor(model => item.CategoryId)</option>
                                     </select>
                                     <span asp-validation-for="@item.CategoryId" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@item.ItemImage" class="control-label"></label>
-                                    <input asp-for="ItemImage" class="form-control" value="@item.ItemImage"/>
+                                    <label asp-for="@item.ItemImage" class="control-label">Image Path</label>
+                                    <input asp-for="ItemImage" class="form-control" value="@item.ItemImage" />
                                     <span asp-validation-for="@item.ItemImage" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@item.ItemValue" class="control-label"></label>
-                                    <input asp-for="ItemValue" class="form-control" value="@item.ItemValue"/>
+                                    <label asp-for="@item.ItemValue" class="control-label">Value</label>
+                                    <input asp-for="ItemValue" class="form-control" value="@item.ItemValue" />
                                     <span asp-validation-for="@item.ItemValue" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@item.PackageId" class="control-label"></label>
+                                    <label asp-for="@item.PackageId" class="control-label">Package</label>
                                     <select asp-for="PackageId" class="form-control" asp-items="ViewBag.PackageId">
                                         <option value="@Model.Packages.PackageId" selected>@Html.DisplayFor(model => Model.Packages.PackageId)</option>
                                         <option value="">None</option>
@@ -190,7 +213,7 @@
                                     <span asp-validation-for="@item.PackageId" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label asp-for="@item.GuestId" class="control-label"></label>
+                                    <label asp-for="@item.GuestId" class="control-label">Donor</label>
                                     <select asp-for="GuestId" class="form-control" asp-items="ViewBag.GuestId">
                                         <option value="@item.GuestId" selected>@Html.DisplayFor(model => item.GuestId)</option>
                                     </select>
@@ -208,8 +231,8 @@
     </div>
 </div>
 <div>
-    <a asp-action="Index">Go to Packages Page</a> |
-    <a asp-controller="Events" asp-action="Details" asp-route-id="@Model.Packages.EventId">Go to Event Detail Page</a>
+    <a class="btn btn-default" asp-action="Index">Go to Packages Page</a>
+    <a class="btn btn-default" asp-controller="Events" asp-action="Details" asp-route-id="@Model.Packages.EventId">Go to Event Detail Page</a>
 </div>
 
 <div class="modal fade" id="addItemModal" role="dialog">
@@ -223,37 +246,39 @@
                 <form asp-controller="Items" asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="ItemName" class="control-label"></label>
+                        <label asp-for="ItemName" class="control-label">Name</label>
                         <input asp-for="ItemName" class="form-control" />
                         <span asp-validation-for="ItemName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ItemDescription" class="control-label"></label>
+                        <label asp-for="ItemDescription" class="control-label">Description</label>
                         <input asp-for="ItemDescription" class="form-control" />
                         <span asp-validation-for="ItemDescription" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="CategoryId" class="control-label"></label>
-                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"/>
+                        <label asp-for="CategoryId" class="control-label">Category</label>
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                            <option value="" selected>None</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ItemImage" class="control-label"></label>
+                        <label asp-for="ItemImage" class="control-label">Image Path</label>
                         <input asp-for="ItemImage" class="form-control" />
                         <span asp-validation-for="ItemImage" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ItemValue" class="control-label"></label>
+                        <label asp-for="ItemValue" class="control-label">Value</label>
                         <input asp-for="ItemValue" class="form-control" />
                         <span asp-validation-for="ItemValue" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="PackageId" class="control-label"></label>
+                        <label asp-for="PackageId" class="control-label">Package</label>
                         <select asp-for="PackageId" class="form-control" asp-items="ViewBag.PackageId">
                             <option value="" selected>None</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label asp-for="GuestId" class="control-label"></label>
+                        <label asp-for="GuestId" class="control-label">Donor</label>
                         <select asp-for="GuestId" class="form-control" asp-items="ViewBag.GuestId"></select>
                     </div>
                     <div class="form-group">

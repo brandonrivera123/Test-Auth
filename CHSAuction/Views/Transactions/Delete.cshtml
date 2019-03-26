@@ -1,5 +1,33 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model CHSAuction.Models.Transactions
+
 @{
+    ViewData["Title"] = "Delete";
 }
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Transactions</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TransactionTotalPrice)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TransactionTotalPrice)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Guest)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Guest.GuestAddress)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="TransactionId" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

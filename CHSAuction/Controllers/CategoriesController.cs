@@ -21,7 +21,14 @@ namespace CHSAuction.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var Categories = await _context.Categories.ToListAsync();
+
+            var EditCategoryVM = new EditCategoryVM
+            {
+                Categories = Categories
+            };
+
+            return View(EditCategoryVM);
         }
 
         // GET: Categories/Details/5
@@ -150,4 +157,3 @@ namespace CHSAuction.Controllers
         }
     }
 }
-
